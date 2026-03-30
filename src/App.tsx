@@ -222,16 +222,26 @@ export default function App() {
         return;
       }
       
-      const newPaciente: Paciente = {
-        ...(pacienteForm as Paciente),
-        id: pacienteForm.id!,
-        email: email,
-        historialSesiones: [],
-        pagos: [],
-        deuda: 0,
-      };
-
-      const updatedPacientes = [...pacientes, newPaciente];
+      const existingPacienteIndex = pacientes.findIndex(p => p.id === pacienteForm.id);
+      let updatedPacientes;
+      if (existingPacienteIndex !== -1) {
+        updatedPacientes = [...pacientes];
+        updatedPacientes[existingPacienteIndex] = {
+          ...updatedPacientes[existingPacienteIndex],
+          ...pacienteForm,
+          email: email
+        } as Paciente;
+      } else {
+        const newPaciente: Paciente = {
+          ...(pacienteForm as Paciente),
+          id: pacienteForm.id!,
+          email: email,
+          historialSesiones: [],
+          pagos: [],
+          deuda: 0,
+        };
+        updatedPacientes = [...pacientes, newPaciente];
+      }
       setPacientes(updatedPacientes);
       saveToDB({ pacientes: updatedPacientes });
       
@@ -844,7 +854,7 @@ export default function App() {
             />
             <button 
               onClick={() => {
-                const pac = pacientes.find(p => p.id === pacLoginForm.id && p.clave === pacLoginForm.clave);
+                const pac = pacientes.find(p => p.id.trim() === pacLoginForm.id.trim() && p.clave.trim() === pacLoginForm.clave.trim());
                 if (pac) {
                   setCurrentPaciente(pac);
                   navigateTo('pac-dashboard');
@@ -1039,8 +1049,11 @@ export default function App() {
                             className="w-full p-1 border rounded" 
                             value={pro.id} 
                             onChange={(e) => {
-                              const updated = profesionales.map(p => p.id === pro.id ? { ...p, id: e.target.value } : p);
-                              setProfesionales(updated);
+                              const val = e.target.value;
+                              if (/^[a-zA-Z]{0,3}[0-9]{0,3}$/.test(val)) {
+                                const updated = profesionales.map(p => p.id === pro.id ? { ...p, id: val } : p);
+                                setProfesionales(updated);
+                              }
                             }}
                           />
                         </div>
@@ -1239,18 +1252,73 @@ export default function App() {
           <div className="bg-white p-4 rounded-xl shadow-sm space-y-4">
             <h2 className="font-bold mb-2">Preguntas Frecuentes</h2>
             <div className="space-y-4">
-              <div className="border-b pb-2">
-                <p className="font-bold text-sm text-indigo-600">¿Cómo doy de alta un paciente?</p>
-                <p className="text-xs text-gray-500 mt-1">Ve al Panel Profesional &gt; Pacientes &gt; Alta de Paciente y completa los campos obligatorios.</p>
-              </div>
-              <div className="border-b pb-2">
-                <p className="font-bold text-sm text-indigo-600">¿Cómo registro un pago?</p>
-                <p className="text-xs text-gray-500 mt-1">En el Listado de Pacientes, abre el detalle del paciente y usa la sección &quot;Asignar Pago&quot;.</p>
-              </div>
-              <div className="border-b pb-2">
-                <p className="font-bold text-sm text-indigo-600">¿Qué es el Token?</p>
-                <p className="text-xs text-gray-500 mt-1">Es el código de autorización proporcionado por la obra social para la videollamada.</p>
-              </div>
+              {currentProfesional ? (
+                <>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo solicito acceso?</p>
+                    <p className="text-xs text-gray-500 mt-1">Ingresá en “Soy Profesional”, completá tu nombre, email y teléfono y enviá la solicitud.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo uso el token?</p>
+                    <p className="text-xs text-gray-500 mt-1">El administrador te enviará un token. Para entrar de nuevo, usá tu nombre y ese token en la pantalla de verificación.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo cargo un paciente?</p>
+                    <p className="text-xs text-gray-500 mt-1">Para cargar un paciente, tenes que ir a la sección de "+ alta paciente" y completas el formulario con sus datos personales. Es importante brindarle un Id y clave, que sera su forma de loguearse en la pagina.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo tengo una sesión?</p>
+                    <p className="text-xs text-gray-500 mt-1">Una vez cargado el paciente, vas a la sección de agenda. Allí podrás cargar al paciente en el horario y día acordado previamente, seleccionas guardar el turno. En el momento de la sesión, ingresas con el botón de la cámara y tenés tu sesión. Allí podrás tomar notas mientras tenes la videollamada.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo veo lo anotado en la videollamada?</p>
+                    <p className="text-xs text-gray-500 mt-1">En el listado de pacientes, al lado de su nombre, vas a ver un botón de "historial", allí se guarda toda la información del paciente.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo registro un pago del paciente?</p>
+                    <p className="text-xs text-gray-500 mt-1">En su perfil, al final de todo, tenes una sección de pagos donde podrás registrar los pagos mencionados por el paciente y verás su estado de cuenta.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo reporto un error?</p>
+                    <p className="text-xs text-gray-500 mt-1">En la sección de abajo tenes el botón de "reportar errores". Ingresas, pones tu nombre y describis el error. Esto le llega al administrador para solucionarlo lo mas pronto posible.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo cambio datos del paciente?</p>
+                    <p className="text-xs text-gray-500 mt-1">Vas a ver el listado de pacientes, tenes un botón para editar. Entras y modificas lo que necesitas.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo se cuando vence mi suscripción?</p>
+                    <p className="text-xs text-gray-500 mt-1">En el botón de configuración, ingresa y vas a ver los datos de tu suscripción. Esta es válida por 30 días. Ante cualquier inconveniente, comunicate por la sección de "reporte de errores".</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo hago para tener sesión?</p>
+                    <p className="text-xs text-gray-500 mt-1">Ingreso con el id y clave brindado por el profesional y voy al botón de iniciar sesión y ya inicia la sesión.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo le pago a mi profesional?</p>
+                    <p className="text-xs text-gray-500 mt-1">Tenes la opción de abonarle por MP, en el link del medio. O por otros medios, y adjuntarle el comprobante por el link de abajo.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo reporto un error?</p>
+                    <p className="text-xs text-gray-500 mt-1">Podes ir a la solapa de errores, poner tu id y mencionar el problema y el administrador se ocupara de resolverlo.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo ingreso como paciente?</p>
+                    <p className="text-xs text-gray-500 mt-1">Tu profesional te dará un ID y una clave. Usalos en “Soy Paciente”.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿Cómo pago las sesiones?</p>
+                    <p className="text-xs text-gray-500 mt-1">Dentro del panel de paciente podés copiar el alias de pago que te muestra la app.</p>
+                  </div>
+                  <div className="border-b pb-2">
+                    <p className="font-bold text-sm text-indigo-600">¿La videollamada es dentro de la app?</p>
+                    <p className="text-xs text-gray-500 mt-1">La app abre una sala de Jitsi integrada para que puedas conectarte con tu profesional.</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

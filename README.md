@@ -1,10 +1,13 @@
-# Analizando.Version1.66
+# Analizando.Version1.67
 
-Esta es la versión 1.66 de la aplicación "Analizando".
+Esta es la versión 1.67 de la aplicación "Analizando".
 
 ## Cambios Recientes
 
-- **Renombrado del Proyecto:** Actualizado a Analizando.Version1.66.
+- **Renombrado del Proyecto:** Actualizado a Analizando.Version1.67.
+- **Corrección de Login de Pacientes:** Se corrigió el error de validación de ID/Clave en el login de pacientes.
+- **Corrección de Edición de Pacientes:** Ahora se actualiza el paciente existente en lugar de crear uno nuevo.
+- **Validación de ID Profesional:** Se restringió el ID de acceso de profesionales a un máximo de 3 letras y 3 números.
 - **Videollamadas:** Se ha hecho consistente el nombre de la sala Jitsi para que esté linkeado directamente a la cuenta del paciente.
 - **Panel de Paciente:** Se agregó la carga de token y se integró con la validación de comprobante para habilitar videollamadas.
 - **Panel Profesional:** Se muestra la información del token y comprobante del paciente para habilitar la videollamada.

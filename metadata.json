@@ -1,0 +1,5 @@
+{
+  "name": "Analizando.Version1.66",
+  "description": "Gestión de turnos y pacientes",
+  "requestFramePermissions": ["camera", "microphone"]
+}

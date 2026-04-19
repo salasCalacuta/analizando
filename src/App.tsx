@@ -218,7 +218,7 @@ export default function App() {
         return;
       }
       if (!dateRegex.test(pacienteForm.fechaInicio || '')) {
-        setError('Fecha de inicio debe tener formato dd/mm/aa');
+        setError('Fecha de inicio debe tener formato dd/mm/yy');
         return;
       }
       
@@ -316,7 +316,7 @@ export default function App() {
   };
 
   const currentWeekDates = getWeekDates(agendaWeek === 'actual' ? 0 : 1);
-  const selectedDate = currentWeekDates[agendaDayIdx];
+  const selectedDate = currentWeekDates[agendaDayIdx] || currentWeekDates[0] || new Date();
   const dateStr = selectedDate.toISOString().split('T')[0];
 
   const handleSaveTurno = (hora: string, pacienteId: string, fecha: string = dateStr) => {
@@ -435,8 +435,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col pb-20">
-      <header className="p-4 bg-white border-b border-gray-200 flex justify-between items-center">
-        <h1 className="font-bold text-lg text-indigo-600 flex items-center gap-2"><Logo /> Analizandome</h1>
+      <header className="p-4 bg-white border-b border-gray-200 flex justify-center items-center">
+        <h1 className="font-bold text-lg text-indigo-600 flex items-center gap-2"><Logo /></h1>
       </header>
 
       <main className="flex-grow p-4 overflow-y-auto">
@@ -449,7 +449,7 @@ export default function App() {
         <BackButton />
         {screen === 'inicio' && (
           <div className="text-center mt-10">
-            <h1 className="text-2xl font-bold mb-6 flex items-center gap-2"><Logo /> Analizandome <span className="text-indigo-600">Pro</span></h1>
+            <h1 className="text-[4rem] font-bold mb-6 flex justify-center items-center gap-2 italic text-indigo-600">Analizando</h1>
             <button onClick={() => navigateTo('pro-login')} className="w-full bg-indigo-600 text-white p-3 rounded-xl font-semibold mb-3">Soy Profesional</button>
             <button onClick={() => navigateTo('pac-login')} className="w-full border border-gray-300 p-3 rounded-xl font-semibold mb-3">Soy Paciente</button>
             <button onClick={() => navigateTo('admin-login')} className="w-full border border-gray-300 p-3 rounded-xl font-semibold">Soy Admin</button>
@@ -636,7 +636,7 @@ export default function App() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-indigo-600 uppercase">Fecha Inicio (dd/mm/aa) *</label>
+                    <label className="text-xs font-bold text-indigo-600 uppercase">Fecha Inicio (dd/mm/yy) *</label>
                     <input 
                       type="text"
                       value={pacienteForm.fechaInicio}
@@ -647,7 +647,7 @@ export default function App() {
                         else if (val.length >= 2) val = val.slice(0, 2) + '/' + val.slice(2);
                         setPacienteForm({...pacienteForm, fechaInicio: val});
                       }}
-                      placeholder="dd/mm/aa" 
+                      placeholder="dd/mm/yy" 
                       className={`w-full p-2 border rounded-lg ${!pacienteForm.fechaInicio ? 'border-red-200' : ''}`} 
                     />
                   </div>
@@ -1581,13 +1581,13 @@ export default function App() {
       )}
 
       <footer className="fixed bottom-0 w-full bg-white border-t border-gray-200 p-2 text-xs">
-        <div className="flex justify-around mb-2">
-          <button onClick={() => setScreen('inicio')} className="font-bold uppercase">Inicio</button>
-          <button onClick={() => setScreen('reporte')} className="font-bold uppercase">Reportar</button>
-          <button onClick={() => setScreen('faq')} className="font-bold uppercase">FAQ</button>
+        <div className="flex justify-around mb-2 gap-2">
+          <button onClick={() => setScreen('inicio')} className="font-bold uppercase border border-sky-400 p-2 rounded w-full">Inicio</button>
+          <button onClick={() => setScreen('reporte')} className="font-bold uppercase border border-sky-400 p-2 rounded w-full">Reportar</button>
+          <button onClick={() => setScreen('faq')} className="font-bold uppercase border border-sky-400 p-2 rounded w-full">FAQ</button>
         </div>
         <div className="text-center text-[9px] text-gray-500 pb-1">
-          versión 1.62 - desarrollado por <strong>Uruguash Desarrollos Web</strong>
+          version 1.69 - desarrollado por <strong>UDW</strong>
         </div>
       </footer>
     </div>

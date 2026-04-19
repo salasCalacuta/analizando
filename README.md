@@ -1,10 +1,14 @@
-# Analizando.Version1.67
+# Analizando.Version1.68
 
-Esta es la versión 1.67 de la aplicación "Analizando".
+Esta es la versión 1.68 de la aplicación "Analizando".
 
 ## Cambios Recientes
 
-- **Renombrado del Proyecto:** Actualizado a Analizando.Version1.67.
+- **Renombrado del Proyecto:** Actualizado a Analizando.Version1.68.
+- **Formateo de fechas:** Ajuste a formato dd/mm/yy en todos los campos.
+- **Mejoras estéticas:** Títulos centrados y redimensionados, botones de menú con borde celeste.
+- **Footer:** Actualización de versión y copyright.
+- **Correcciones previas:**
 - **Corrección de Login de Pacientes:** Se corrigió el error de validación de ID/Clave en el login de pacientes.
 - **Corrección de Edición de Pacientes:** Ahora se actualiza el paciente existente en lugar de crear uno nuevo.
 - **Validación de ID Profesional:** Se restringió el ID de acceso de profesionales a un máximo de 3 letras y 3 números.
